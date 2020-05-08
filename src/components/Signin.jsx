@@ -1,9 +1,32 @@
-import React from 'react';
-import { Row, Col } from 'antd';
-import { Button, Input } from 'antd';
+import React, { useEffect } from 'react';
+import { Row, Col, Button, Input, message } from 'antd';
 import styles from './Signin.module.css';
+import axios from 'axios';
+import { withRouter } from 'react-router-dom';
 
-const Signin = () => {
+const Signin = ({
+  history,
+  loading,
+  error,
+  loginStart,
+  loginSuccess,
+  loginFail,
+}) => {
+  const emailRef = React.useRef();
+  const passwordRef = React.useRef();
+
+  useEffect(() => {
+    if (error === null) return;
+    const code = error.response.data.error;
+    if (code === 'USER_NOT_EXIST') {
+      message.error('없는 유저');
+    } else if (code === 'PASSWORD_NOT_MATCH') {
+      message.error('비번 틀림');
+    } else {
+      message.error('언노운 에러');
+    }
+  }, [error]);
+
   return (
     <form>
       <Row align="middle" className={styles.signin_row}>
@@ -17,7 +40,7 @@ const Signin = () => {
               />
             </Col>
             <Col span={12}>
-              <div className={styles.signin_title}>My Books</div>
+              <div className={styles.signin_title}>LOGIN</div>
               <div className={styles.signin_subtitle}>
                 Please Note Your Opinion
               </div>
@@ -32,6 +55,7 @@ const Signin = () => {
                   autoComplete="email"
                   name="email"
                   className={styles.input}
+                  ref={emailRef}
                 />
               </div>
               <div className={styles.password_title}>
@@ -43,12 +67,13 @@ const Signin = () => {
                   type="password"
                   autoComplete="current-password"
                   className={styles.input}
+                  ref={passwordRef}
                 />
               </div>
               <div className={styles.button_area}>
                 <Button
                   size="large"
-                  loading={false}
+                  loading={loading}
                   onClick={click}
                   className={styles.button}
                 >
@@ -62,7 +87,35 @@ const Signin = () => {
     </form>
   );
 
-  function click() {}
+  async function click() {
+    const email = emailRef.current.state.value;
+    const password = passwordRef.current.state.value;
+    console.log('clicked', email, password);
+    // 서버에 보내기
+
+    loginStart();
+
+    try {
+      await sleep(3000);
+      const response = await axios.post('https://api.marktube.tv/v1/me', {
+        email,
+        password,
+      });
+      localStorage.setItem('token', response.data.token);
+      loginSuccess(response.data.token);
+      history.push('/');
+    } catch (error) {
+      loginFail(error);
+    }
+  }
 };
 
-export default Signin;
+function sleep(ms) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, ms);
+  });
+}
+
+export default withRouter(Signin);

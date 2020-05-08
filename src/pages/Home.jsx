@@ -1,9 +1,24 @@
 import React from 'react';
+import { Redirect } from 'react-router-dom';
+import withToken from '../hocs/withToken';
+import { Button } from 'antd';
 
-const HomePage = () => (
-  <div>
-    <h1>Home</h1>
-  </div>
-);
+const Home = ({ token, history }) => {
+  console.log('Home', token);
+  if (token === null) {
+    return <Redirect to="/signin" />;
+  }
+  return (
+    <div>
+      <h1>Home</h1>
+      <Button onClick={click}>Logout</Button>
+    </div>
+  );
 
-export default HomePage;
+  function click() {
+    localStorage.removeItem('token');
+    history.push('/signin');
+  }
+};
+
+export default withToken(Home);
