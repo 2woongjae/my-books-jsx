@@ -1,42 +1,17 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import Books from '../components/Books';
 import { useSelector, useDispatch } from 'react-redux';
-import {
-  booksStartAction,
-  booksSuccessAction,
-  booksFailAction,
-} from '../redux/actions';
+import { getBooksThunkAction } from '../redux/actions';
 
 const BooksContainer = ({ token }) => {
   const books = useSelector((state) => state.books.books);
   const dispatch = useDispatch();
 
-  //
-  const booksStart = useCallback(() => {
-    dispatch(booksStartAction());
-  }, [dispatch]);
-  const booksSuccess = useCallback(
-    (books) => {
-      dispatch(booksSuccessAction(books));
-    },
-    [dispatch],
-  );
-  const booksFail = useCallback(
-    (error) => {
-      dispatch(booksFailAction(error));
-    },
-    [dispatch],
-  );
+  function getBooksThunk() {
+    dispatch(getBooksThunkAction(token));
+  }
 
-  return (
-    <Books
-      books={books}
-      token={token}
-      booksStart={booksStart}
-      booksSuccess={booksSuccess}
-      booksFail={booksFail}
-    />
-  );
+  return <Books books={books} token={token} getBooksThunk={getBooksThunk} />;
 };
 
 export default BooksContainer;
