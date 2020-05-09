@@ -2,6 +2,7 @@ import React from 'react';
 import { Redirect } from 'react-router-dom';
 import withToken from '../hocs/withToken';
 import { Button } from 'antd';
+import BooksContainer from '../containers/BooksContainer';
 
 const Home = ({ token, history }) => {
   console.log('Home', token);
@@ -12,6 +13,7 @@ const Home = ({ token, history }) => {
     <div>
       <h1>Home</h1>
       <Button onClick={click}>Logout</Button>
+      <BooksContainer token={token} />
     </div>
   );
 
