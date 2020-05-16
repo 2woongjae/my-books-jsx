@@ -5,12 +5,16 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { Provider } from 'react-redux';
-import store from './redux/store';
+import create from './redux/create';
+import { createBrowserHistory } from 'history';
+
+const history = createBrowserHistory();
+const store = create(history);
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <App />
+      <App history={history} />
     </Provider>
   </React.StrictMode>,
   document.getElementById('root'),

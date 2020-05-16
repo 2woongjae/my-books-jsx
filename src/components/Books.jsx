@@ -1,13 +1,27 @@
 import React, { useEffect } from 'react';
 import Book from './Book';
+import { Button } from 'antd';
 
-const Books = ({ books, getBooksThunk }) => {
+const Books = ({
+  books,
+  getBooksThunk,
+  removeTokenThunk,
+  loading,
+  getBooksSaga,
+}) => {
   useEffect(() => {
-    getBooksThunk();
+    getBooksSaga();
+    getBooksSaga();
+    getBooksSaga();
+    getBooksSaga();
+    getBooksSaga();
   }, []);
 
   return (
     <div>
+      <Button onClick={click} loading={loading}>
+        Logout
+      </Button>
       <h1>Books</h1>
       <div>
         {books.map((book) => (
@@ -16,6 +30,10 @@ const Books = ({ books, getBooksThunk }) => {
       </div>
     </div>
   );
+
+  function click() {
+    removeTokenThunk();
+  }
 };
 
 export default Books;

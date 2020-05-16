@@ -1,17 +1,9 @@
 import React, { useEffect } from 'react';
 import { Row, Col, Button, Input, message } from 'antd';
 import styles from './Signin.module.css';
-import axios from 'axios';
 import { withRouter } from 'react-router-dom';
 
-const Signin = ({
-  history,
-  loading,
-  error,
-  loginStart,
-  loginSuccess,
-  loginFail,
-}) => {
+const Signin = ({ history, loading, error, loginThunk }) => {
   const emailRef = React.useRef();
   const passwordRef = React.useRef();
 
@@ -90,32 +82,9 @@ const Signin = ({
   async function click() {
     const email = emailRef.current.state.value;
     const password = passwordRef.current.state.value;
-    console.log('clicked', email, password);
-    // 서버에 보내기
 
-    loginStart();
-
-    try {
-      await sleep(3000);
-      const response = await axios.post('https://api.marktube.tv/v1/me', {
-        email,
-        password,
-      });
-      localStorage.setItem('token', response.data.token);
-      loginSuccess(response.data.token);
-      history.push('/');
-    } catch (error) {
-      loginFail(error);
-    }
+    loginThunk(email, password);
   }
 };
-
-function sleep(ms) {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve();
-    }, ms);
-  });
-}
 
 export default withRouter(Signin);
